@@ -39,7 +39,10 @@ func main() {
 		logrus.WithField("port", conf.port).Debug("setting default port")
 	}
 
-	creds, _ := credentials.NewClientTLSFromFile("secret/tls.cert", "")
+	creds, err := credentials.NewClientTLSFromFile("secret/tls.cert", "")
+	if err != nil {
+		logrus.WithField("err", err).Fatal("could not create credentials")
+	}
 	lnConn, err := grpc.Dial(
 		conf.nodeAddress,
 		grpc.WithTransportCredentials(creds),
