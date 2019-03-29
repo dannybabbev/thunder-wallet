@@ -31,13 +31,13 @@ func main() {
 	var conf configuration
 	if addr := os.Getenv("NODE"); addr == "" {
 		conf.nodeAddress = "206.189.33.20:10009"
-		logrus.WithField("node-address", conf.nodeAddress).Debug("setting default node address")
 	}
+	logrus.WithField("node-address", conf.nodeAddress).Debug("node address set to")
 
 	if port := os.Getenv("PORT"); port == "" {
 		conf.port = "8080"
-		logrus.WithField("port", conf.port).Debug("setting default port")
 	}
+	logrus.WithField("port", conf.port).Debug("server port")
 
 	creds, err := credentials.NewClientTLSFromFile("secret/tls.cert", "")
 	if err != nil {
