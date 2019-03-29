@@ -1,15 +1,15 @@
 package main
 
 import (
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc"
-	"github.com/sirupsen/logrus"
-	"io/ioutil"
-	"github.com/lightningnetwork/lnd/lnrpc"
-	"google.golang.org/grpc/metadata"
-	"golang.org/x/net/context"
 	"encoding/hex"
 	"github.com/gin-gonic/gin"
+	"github.com/lightningnetwork/lnd/lnrpc"
+	"github.com/sirupsen/logrus"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/metadata"
+	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -23,7 +23,7 @@ func init() {
 
 type configuration struct {
 	nodeAddress string
-	port string
+	port        string
 }
 
 func main() {
@@ -43,12 +43,12 @@ func main() {
 	lnConn, err := grpc.Dial(
 		conf.nodeAddress,
 		grpc.WithTransportCredentials(creds),
-		)
+	)
 	if err != nil {
 		logrus.WithField("err", err).Fatal("could not dial lnd gRPC")
 	}
 
-	mac, err := ioutil.ReadFile("secret/admin.macaroon")
+	mac, err := ioutil.ReadFile("secret/data/chain/bitcoin/testnet/admin.macaroon")
 	if err != nil {
 		logrus.WithField("err", err).Fatal("could not read macaroon")
 	}
@@ -74,18 +74,18 @@ func main() {
 		info, err := lnClient.GetInfo(getStdContext(), &lnrpc.GetInfoRequest{})
 		if err != nil {
 			logrus.WithField("err", err).Error("could not get info from lnd")
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H {
-				"error" : err,
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"error": err,
 			})
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H {
-			"pubkey" : info.IdentityPubkey,
-			"alias" : info.Alias,
-			"bestBlockHash" : info.BlockHash,
-			"uri" : info.Uris,
-			"version" : info.Version,
+		c.JSON(http.StatusOK, gin.H{
+			"pubkey":        info.IdentityPubkey,
+			"alias":         info.Alias,
+			"bestBlockHash": info.BlockHash,
+			"uri":           info.Uris,
+			"version":       info.Version,
 		})
 	})
 
