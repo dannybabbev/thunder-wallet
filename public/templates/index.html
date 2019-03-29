@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>Lightning Wallet</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="/assets/style.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body class="text-center">
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <h3 class="masthead-brand">Thunder Wallet</h3>
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link active" href="#">Wallet</a>
+            </nav>
+        </div>
+    </header>
+
+    <main role="main" class="inner cover" id="app">
+        <h1 class="cover-heading">Node Info</h1>
+        <h3 v-if="error">{{"{{ error }}"}}</h3>
+        <div style="text-align: left;">
+            <p>LND version: <span v-if="loading">Loading...</span>{{"{{ info.version }}"}}</p>
+            <p>Alias: <span v-if="loading">Loading...</span>{{"{{ info.alias }}"}}</p>
+            <p>Best Block hash: <span v-if="loading">Loading...</span>{{"{{ info.bestBlockHash }}"}}</p>
+            <p>URIs: <span v-if="loading">Loading...</span> {{"{{ info.uri }}"}} </p>
+            <p>Pubkey: <span v-if="loading">Loading...</span> {{"{{ info.pubkey }}"}}</p>
+        </div>
+    </main>
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <p><a href="#">Thunder Wallet</a>, by <a href="https://twitter.com/DanielBabbev">@DanielBabbev</a>.</p>
+        </div>
+    </footer>
+</div>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            loading: true,
+            error: null,
+            info: {},
+        },
+        mounted() {
+            axios
+                    .get("/api/info")
+                    .then((res) => {
+                        console.log(res.data);
+                        this.info = res.data;
+                    })
+                    .catch((err) => {
+                        console.log(err.response.data);
+                        this.error = err.response.data.error;
+                    })
+                    .finally(() => this.loading = false);
+        }
+    })
+</script>
+</body>
+</html>
