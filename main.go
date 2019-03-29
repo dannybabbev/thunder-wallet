@@ -29,15 +29,17 @@ type configuration struct {
 func main() {
 	logrus.Debug("starting wallet")
 	var conf configuration
-	if addr := os.Getenv("NODE"); addr == "" {
+	conf.nodeAddress = os.Getenv("NODE")
+	if conf.nodeAddress == "" {
 		conf.nodeAddress = "206.189.33.20:10009"
 	}
-	logrus.WithField("node-address", conf.nodeAddress).Debug("node address set to")
+	logrus.WithField("node-address", conf.nodeAddress).Debug("node address for gRPC connection")
 
-	if port := os.Getenv("PORT"); port == "" {
+	conf.port = os.Getenv("PORT")
+	if conf.port == "" {
 		conf.port = "8080"
 	}
-	logrus.WithField("port", conf.port).Debug("server port")
+	logrus.WithField("port", conf.port).Debug("web server port")
 
 	creds, err := credentials.NewClientTLSFromFile("secret/tls.cert", "")
 	if err != nil {
